@@ -23,9 +23,9 @@ PS> .\Install-Conatinerd.ps1
 
 Param(
     [parameter(HelpMessage = "ContainerD version to use")]
-    [string] $ContainerDVersion = "1.4.1",
-    [parameter(HelpMessage = "Name of network adapter to use when configuring basic nat network")]
-    [string] $netAdapterName = "Ethernet"
+    [string] $ContainerDVersion = "1.5.9",
+    [parameter(HelpMessage = "Run  Get-NetAdapter -Name "Ethernet*" | Format-List -Property Name")]
+    [string] $netAdapterName = "Ethernet Instance 0"
 )
 
 $ErrorActionPreference = 'Stop'
