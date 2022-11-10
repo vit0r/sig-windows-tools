@@ -15,16 +15,16 @@ Kubernetes version to download and use
 Container that Kubernetes will use. (Docker or containerD)
 
 .EXAMPLE
-PS> .\PrepareNode.ps1 -KubernetesVersion v1.24.2 -ContainerRuntime containerD
+PS> .\PrepareNode.ps1 -KubernetesVersion v1.25.3 -ContainerRuntime containerD
 
 #>
 
 Param(
     [parameter(Mandatory = $true, HelpMessage="Kubernetes version to use")]
-    [string] $KubernetesVersion,
+    [string] $ContainerRuntime = "v1.25.3"
     [parameter(HelpMessage="Container runtime that Kubernets will use")]
     [ValidateSet("containerD", "Docker")]
-    [string] $ContainerRuntime = "Docker"
+    [string] $ContainerRuntime = "containerD"
 )
 $ErrorActionPreference = 'Stop'
 
