@@ -24,7 +24,7 @@ PS> .\Install-Conatinerd.ps1
 Param(
     [parameter(HelpMessage = "ContainerD version to use")]
     [string] $ContainerDVersion = "1.5.9",
-    [parameter(HelpMessage = "Run  Get-NetAdapter -Name "Ethernet*" | Format-List -Property Name")]
+    [parameter(HelpMessage = "Name of network adapter to use when configuring basic nat network")]
     [string] $netAdapterName = "Ethernet Instance 0"
 )
 
@@ -163,5 +163,3 @@ containerd.exe --register-service
 
 Write-Output "Starting ContainerD service"
 Start-Service containerd
-
-Write-Output "Done - please remember to add '--cri-socket `"npipe:////./pipe/containerd-containerd`"' to your kubeadm join command"
