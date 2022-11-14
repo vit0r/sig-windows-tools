@@ -24,8 +24,8 @@ PS> .\Install-Conatinerd.ps1
 Param(
     [parameter(HelpMessage = "ContainerD version to use")]
     [string] $ContainerDVersion = "1.5.9",
-    [parameter(HelpMessage = "Interface name"]
-    [string] $netAdapterName = (Get-NetIPAddress -AddressFamily "IPv4" -InterfaceAlias "Ethernet*").InterfaceAlias
+    [parameter(HelpMessage = "Interface name")]
+    [string] $netAdapterName
 )
 
 $ErrorActionPreference = 'Stop'
