@@ -12,7 +12,7 @@ This script assists with joining a Windows node to a cluster.
 Kubernetes version to download and use
 
 .PARAMETER ContainerRuntime
-Container that Kubernetes will use. (Docker or containerD)
+Container that Kubernetes will use containerD)
 
 .EXAMPLE
 PS> .\PrepareNode.ps1 -KubernetesVersion v1.25.4 -ContainerRuntime containerD
@@ -92,14 +92,6 @@ $StartKubeletFileContent = '$FileContent = Get-Content -Path "/var/lib/kubelet/k
 $global:KubeletArgs = $FileContent.TrimStart(''KUBELET_KUBEADM_ARGS='').Trim(''"'')
 
 $global:containerRuntime = {{CONTAINER_RUNTIME}}
-
-if ($global:containerRuntime -eq "Docker") {
-    $netId = docker network ls -f name=host --format "{{ .ID }}"
-
-    if ($netId.Length -lt 1) {
-    docker network create -d nat host
-    }
-}
 
 $cmd = "' + $cmd_commands + '"
 Invoke-Expression $cmd'
