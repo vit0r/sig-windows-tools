@@ -22,9 +22,8 @@ PS> .\PrepareNode.ps1 -KubernetesVersion v1.25.4 -ContainerRuntime containerD
 Param(
     [parameter(Mandatory = $true, HelpMessage="Kubernetes version to use")]
     [string] $ContainerRuntime = "v1.25.4",
-    [parameter(HelpMessage="Container runtime that Kubernets will use")]
-    [ValidateSet("containerD", "Docker")]
-    [string] $ContainerRuntime = "containerD",
+    [parameter(HelpMessage="Use containerD only")]
+    [string] $ContainerRuntime = "containerD"
 )
 $ErrorActionPreference = 'Stop'
 
@@ -38,12 +37,7 @@ function DownloadFile($destination, $source) {
     }
 }
 
-if ($ContainerRuntime -eq "Docker") {
-    if (-not(Test-Path "//./pipe/docker_engine")) {
-        Write-Error "Docker service was not detected - please install start Docker before calling PrepareNode.ps1 with -ContainerRuntime Docker"
-        exit 1
-    }
-} elseif ($ContainerRuntime -eq "containerD") {
+if ($ContainerRuntime -eq "containerD") {
     if (-not(Test-Path "//./pipe/containerd-containerd")) {
         Write-Error "ContainerD service was not detected - please install and start containerD before calling PrepareNode.ps1 with -ContainerRuntime containerD"
         exit 1
@@ -69,13 +63,7 @@ DownloadFile $kubeletBinPath https://dl.k8s.io/$KubernetesVersion/bin/windows/am
 DownloadFile "$global:KubernetesPath\kubeadm.exe" https://dl.k8s.io/$KubernetesVersion/bin/windows/amd64/kubeadm.exe
 DownloadFile "$global:KubernetesPath\wins.exe" https://github.com/rancher/wins/releases/download/v0.0.4/wins.exe
 
-if ($ContainerRuntime -eq "Docker") {
-    # Create host network to allow kubelet to schedule hostNetwork pods
-    # NOTE: For containerd the 0-containerd-nat.json network config template added by
-    # Install-containerd.ps1 joins pods to the host network.
-    Write-Host "Creating Docker host network"
-    docker network create -d nat host
-} elseif ($ContainerRuntime -eq "containerD") {
+if ($ContainerRuntime -eq "containerD") {
     DownloadFile "c:\k\hns.psm1" https://github.com/Microsoft/SDN/raw/master/Kubernetes/windows/hns.psm1
     Import-Module "c:\k\hns.psm1"
     # TODO(marosset): check if network already exists before creatation
@@ -138,9 +126,7 @@ $newPath = "$global:NssmInstallDirectory;" +
 Write-Host "Registering kubelet service"
 nssm install kubelet $global:Powershell $global:PowershellArgs $global:StartKubeletScript
 
-if ($ContainerRuntime -eq "Docker") {
-    nssm set kubelet DependOnService docker
-} elseif ($ContainerRuntime -eq "containerD") {
+if ($ContainerRuntime -eq "containerD") {
     nssm set kubelet DependOnService containerd
 }
 
