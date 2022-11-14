@@ -21,7 +21,7 @@ PS> .\PrepareNode.ps1 -KubernetesVersion v1.25.4 -ContainerRuntime containerD
 
 Param(
     [parameter(Mandatory = $true, HelpMessage="Kubernetes version to use")]
-    [string] $ContainerRuntime = "v1.25.4",
+    [string] $KubernetesVersion = "v1.25.4",
     [parameter(HelpMessage="Use containerD only")]
     [string] $ContainerRuntime = "containerD"
 )
