@@ -22,12 +22,40 @@ PS> .\Install-Conatinerd.ps1
 
 Param(
     [parameter(HelpMessage = "ContainerD version to use")]
-    [string] $ContainerDVersion = "1.6.8",
+    [string] $ContainerDVersion = "1.6.16",
     [parameter(HelpMessage = "Name of network adapter to use when configuring basic nat network")]
     [string] $netAdapterName = "Ethernet"
 )
 
 $ErrorActionPreference = 'Stop'
+
+function CalculateSubNet {
+    param (
+        [string]$gateway,
+        [int]$prefixLength
+    )
+    $len = $prefixLength
+    $parts = $gateway.Split('.')
+    $result = @()
+    for ($i = 0; $i -le 3; $i++) {
+        if ($len -ge 8) {
+            $mask = 255
+
+        }
+        elseif ($len -gt 0) {
+            $mask = ((256 - 2 * (8 - $len)))
+        }
+        else {
+            $mask = 0
+        }
+        $len -= 8
+        $result += ([int]$parts[$i] -band $mask)
+    }
+
+    $subnetIp = [string]::Join('.', $result)
+    $cidr = 32 - $prefixLength
+    return "${subnetIp}/$cidr"
+}
 
 function DownloadFile($destination, $source) {
     Write-Host("Downloading $source to $destination")
